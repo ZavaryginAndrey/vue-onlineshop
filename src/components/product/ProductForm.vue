@@ -10,13 +10,13 @@
     </div>
     <app-input v-model="product.count" label="Количество"/>
     <app-input v-model="product.price" label="Цена"/>
-<!--  TODO: пока что нет валидации формы.  -->
+<!--  TODO: добавить валидацию useForm  -->
     <app-button @click="$emit('close')" text="Создать" :disabled="true"/>
   </form>
 </template>
 
 <script>
-import {computed, reactive, ref} from 'vue'
+import {computed, reactive} from 'vue'
 import {useStore} from 'vuex'
 import AppInput from '@/components/ui/AppInput'
 import AppButton from '@/components/ui/AppButton'

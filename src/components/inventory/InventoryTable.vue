@@ -1,5 +1,6 @@
 <template>
-  <table class="table">
+  <app-loader v-if="loading" />
+  <table class="table" v-else>
     <thead>
     <tr>
       <th>#</th>
@@ -33,15 +34,22 @@
 
 <script>
 import {useStore} from 'vuex'
-import {computed} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import {useLoad} from '@/use/load'
+import AppLoader from '@/components/ui/AppLoader'
 
 export default {
+  components: {AppLoader},
   setup() {
     const store = useStore()
-    useLoad()
+    const loading = ref(true)
+    onMounted(async () => {
+      await useLoad()
+      loading.value = false
+    })
 
     return {
+      loading,
       products: computed(() => store.getters['product/products'])
     }
   }

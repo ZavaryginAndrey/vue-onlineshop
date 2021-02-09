@@ -1,4 +1,5 @@
 <template>
+  <app-loader v-if="loading"/>
   <div class="card">
     <product-filter v-model="filter" />
     <product-table :products="products" />
@@ -12,15 +13,18 @@ import {useRouter} from 'vue-router'
 import {useLoad} from '@/use/load'
 import ProductTable from '@/components/product/ProductTable'
 import ProductFilter from '@/components/product/ProductFilter'
+import AppLoader from '@/components/ui/AppLoader'
 
 export default {
   setup() {
     const store = useStore()
     const router = useRouter()
     const filter = ref({})
+    const loading = ref(true)
 
     onMounted(async () => {
       await useLoad()
+      loading.value = false
     })
 
     watch(filter, filter => {
@@ -50,11 +54,13 @@ export default {
     )
 
     return {
+      loading,
       filter,
       products
     }
   },
   components: {
+    AppLoader,
     ProductFilter,
     ProductTable
   }

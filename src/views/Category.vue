@@ -1,24 +1,19 @@
 <template>
   <app-page title="Категории">
     <template #header>
-      <app-button type="primary" text="Добавить" @click="modal = true"/>
+      <app-button type="primary" text="Добавить" disabled/>
     </template>
     <category-table />
-    <teleport to="body">
-      <app-modal v-if="modal" title="Создать заявку" @close="modal = false">
-        <product-form />
-      </app-modal>
-    </teleport>
   </app-page>
 </template>
 
 <script>
+import {ref} from 'vue'
 import AppButton from '@/components/ui/AppButton'
 import AppPage from '@/components/ui/AppPage'
 import AppModal from '@/components/ui/AppModal'
 import ProductForm from '@/components/product/ProductForm'
-import CategoryTable from '@/components/category/CategoryTable';
-import {ref} from 'vue';
+import CategoryTable from '@/components/category/CategoryTable'
 
 export default {
   setup() {

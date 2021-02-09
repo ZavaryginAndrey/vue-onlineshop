@@ -13,12 +13,12 @@
 </template>
 
 <script>
+import {ref} from 'vue'
 import AppButton from '@/components/ui/AppButton'
 import AppPage from '@/components/ui/AppPage'
 import AppModal from '@/components/ui/AppModal'
 import ProductForm from '@/components/product/ProductForm'
 import InventoryTable from '@/components/inventory/InventoryTable'
-import {ref} from 'vue';
 
 export default {
   setup() {

@@ -16,9 +16,6 @@
       </td>
       <td>
         <product-counter :product="product" />
-<!--        <app-button type="primary" text="+" @action="add(product.id)"/>-->
-<!--        {{ cart[product.id] }} шт.-->
-<!--        <app-button type="danger" text="-" @action="remove(product.id)"/>-->
       </td>
       <td>{{ currency(product.price) }}</td>
     </tr>
