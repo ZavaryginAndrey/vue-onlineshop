@@ -1,7 +1,18 @@
 <template>
   <nav class="navbar">
-    <h3>Магазинчик</h3>
-    <ul class="navbar-menu">
+    <h3>{{admin ? 'Админка' : 'Магазинчик'}}</h3>
+    <ul class="navbar-menu" v-if="admin">
+      <li>
+        <router-link to="/admin/products">Инвентарь</router-link>
+      </li>
+      <li>
+        <router-link to="/admin/categories">Категории</router-link>
+      </li>
+      <li>
+        <router-link to="/">Выход</router-link>
+      </li>
+    </ul>
+    <ul class="navbar-menu" v-else>
       <li>
         <router-link to="/">Магазин</router-link>
       </li>
@@ -15,8 +26,7 @@
 <script>
 
 export default {
-  setup() {
-  }
+  props: ['admin']
 }
 </script>
 

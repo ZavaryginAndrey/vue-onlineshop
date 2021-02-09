@@ -2,30 +2,7 @@
   <app-loader v-if="loading"/>
   <app-page v-else title="Корзина">
     <h3 class="text-center" v-if="isEmpty">В корзине пока ничего нет</h3>
-    <table class="table" v-else>
-      <thead>
-      <tr>
-        <th>Наименование</th>
-        <th>Количество</th>
-        <th>Цена (шт)</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="proruct in cartProducts" :key="proruct.id">
-        <td>
-          {{proruct.title}}
-          <br />
-          <img :src="proruct.img" style="max-height: 80px;">
-        </td>
-        <td>
-          <button class="btn primary" @click="cart[proruct.id]++">+</button>
-          {{ cart[proruct.id] }} шт.
-          <button class="btn danger" @click="remove(proruct.id)">-</button>
-        </td>
-        <td>{{ currency(proruct.price) }}</td>
-      </tr>
-      </tbody>
-    </table>
+    <cart-table :products="cartProducts" v-else></cart-table>
     <hr>
     <p class="text-right"><strong>Всего: {{ currency(total) }}</strong></p>
     <p class="text-right">
@@ -35,62 +12,41 @@
 </template>
 
 <script>
-import {onMounted, ref, computed, watch, reactive} from 'vue'
-import {useStore} from 'vuex';
+import {onMounted, ref, computed} from 'vue'
+import {useStore} from 'vuex'
 import {currency} from '@/utils/currency'
+import {useLoad} from '@/use/load'
 import AppLoader from '@/components/ui/AppLoader'
 import AppPage from '@/components/ui/AppPage'
-
-const CART_MODEL = reactive({
-  '2': 3,
-  '5': 1,
-  '7': 8
-})
+import CartTable from '@/components/cart/CartTable'
 
 export default {
   setup() {
 
     const store = useStore()
     const loading = ref(true)
+    const cart = store.getters['cart/cart']
 
     onMounted(async () => {
-      await store.dispatch('product/get')
+      await useLoad()
       loading.value = false
     })
 
     const cartProducts = computed(() => store.getters['product/products']
-      .filter(product => Object.keys(CART_MODEL).includes(product.id)))
-
-    watch(CART_MODEL, value => {
-      console.log(value)
-      Object.keys(value).filter(id => value[id] === 0).forEach(id => {
-        delete CART_MODEL[id]
-        store.dispatch('setMessage', {
-          type: 'primary',
-          value: `Продукт удален из корзины`
-        })
-      })
-
-    })
+      .filter(product => Object.keys(cart).includes(product.id)))
 
     return{
       loading,
       cartProducts,
-      cart: CART_MODEL,
-      isEmpty: computed(() => Object.keys(CART_MODEL).length === 0),
-      total: computed(() => cartProducts.value.reduce((acc, p) => acc + p.price*CART_MODEL[p.id], 0)),
       currency,
-      add(id) {
-        CART_MODEL[id]++
-      },
-      remove(id) {
-        CART_MODEL[id]--
-      }
+      isEmpty: computed(() => Object.keys(cart).length === 0),
+      total: computed(() => cartProducts.value.reduce((acc, product) => acc + product.price*cart[product.id], 0)),
     }
   },
   components: {
     AppLoader,
-    AppPage
+    AppPage,
+    CartTable
   }
 }
 </script>

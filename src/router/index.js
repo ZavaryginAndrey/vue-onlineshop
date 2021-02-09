@@ -7,8 +7,7 @@ const routes = [
     name: 'Shop',
     component: () => import('../views/Shop'),
     meta: {
-      layout: 'main',
-      auth: true
+      layout: 'main'
     }
   },
   {
@@ -16,8 +15,7 @@ const routes = [
     name: 'Cart',
     component: () => import('../views/Cart'),
     meta: {
-      layout: 'main',
-      auth: true
+      layout: 'main'
     }
   },
   {
@@ -33,7 +31,19 @@ const routes = [
     name: 'Product',
     component: () => import('../views/Product'),
     meta: {
-      layout: 'main',
+      layout: 'main'
+    }
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import('../views/Admin'),
+    children: [
+      { path: 'products', component: () => import('../views/Inventory')},
+      { path: 'categories', component: () => import('../views/Category')}
+    ],
+    meta: {
+      layout: 'admin',
       auth: true
     }
   }

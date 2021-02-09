@@ -1,40 +1,64 @@
 <template>
   <div class="card">
-    <div class="products-filter">
-      <div class="form-control">
-        <input type="text" placeholder="Найти товар...">
-        <span class="form-control-clear">&times;</span>
-      </div>
-
-      <ul class="list">
-        <li class="list-item">Все</li>
-        <li class="list-item">
-          Название категории
-        </li>
-      </ul>
-    </div>
-    <div class="products-table">
-      <div class="product-card">
-        <div class="product-img">
-          <img src="https://images.grocery.yandex.net/2756334/33a66b51989449f9918122a775885fbc/300x300.png">
-        </div>
-        <h4 class="product-title">Название товара</h4>
-        <div class="text-center">
-          <button class="btn">23</button>
-          <!--          <div class="product-controls">-->
-          <!--            <button class="btn danger">-</button>-->
-          <!--            <strong>123</strong>-->
-          <!--            <button class="btn primary">+</button>-->
-          <!--          </div>-->
-        </div>
-      </div>
-    </div>
+    <product-filter v-model="filter" />
+    <product-table :products="products" />
   </div>
 </template>
 
 <script>
-  export default {
+import {computed, onMounted, watch, ref} from 'vue'
+import {useStore} from 'vuex'
+import {useRouter} from 'vue-router'
+import {useLoad} from '@/use/load'
+import ProductTable from '@/components/product/ProductTable'
+import ProductFilter from '@/components/product/ProductFilter'
+
+export default {
+  setup() {
+    const store = useStore()
+    const router = useRouter()
+    const filter = ref({})
+
+    onMounted(async () => {
+      await useLoad()
+    })
+
+    watch(filter, filter => {
+      const query = {}
+      if (filter.name) {
+        query.search = filter.name
+      }
+      if (filter.category) {
+        query.category = filter.category
+      }
+      router.push({query})
+    })
+
+    const products = computed(() => store.getters['product/products']
+        .filter(p => {
+          if (filter.value.name) {
+            return p.title.toLowerCase().includes(filter.value.name.toLowerCase())
+          }
+          return p
+        })
+        .filter(p => {
+          if (filter.value.category) {
+            return p.category === filter.value.category
+          }
+          return p
+        })
+    )
+
+    return {
+      filter,
+      products
+    }
+  },
+  components: {
+    ProductFilter,
+    ProductTable
   }
+}
 </script>
 
 <style scoped>

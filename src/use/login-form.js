@@ -43,7 +43,7 @@ export function useLoginForm() {
     console.log('Form', values)
     try {
       await store.dispatch('auth/login', values)
-      router.push('/Admin')
+      router.push('/admin/products')
     } catch (e) {}
   })
   
