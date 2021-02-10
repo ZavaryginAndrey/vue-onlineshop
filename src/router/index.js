@@ -13,7 +13,7 @@ const routes = [
   {
     path: '/cart',
     name: 'Cart',
-    component: () => import('../views/Cart'),
+    component: () => import('../components/cart/Cart'),
     meta: {
       layout: 'main'
     }
@@ -29,7 +29,7 @@ const routes = [
   {
     path: '/product/:id',
     name: 'Product',
-    component: () => import('../views/Product'),
+    component: () => import('../components/product/Product'),
     meta: {
       layout: 'main'
     }
@@ -37,10 +37,11 @@ const routes = [
   {
     path: '/admin',
     name: 'Admin',
-    component: () => import('../views/Admin'),
+    component: () => import('../components/admin/Admin'),
     children: [
-      { path: 'products', component: () => import('../views/Inventory')},
-      { path: 'categories', component: () => import('../views/Category')}
+      { path: 'product/:id', component: () => import('../components/admin/product/Product')},
+      { path: 'products', component: () => import('../components/admin/inventory/Inventory')},
+      { path: 'categories', component: () => import('../components/admin/category/Category')}
     ],
     meta: {
       layout: 'admin',

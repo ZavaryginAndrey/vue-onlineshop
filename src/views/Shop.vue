@@ -10,9 +10,9 @@
 import {computed, onMounted, watch, ref} from 'vue'
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
-import {useLoad} from '@/use/load'
+import {useLoadData} from '@/use/load-data'
 import ProductTable from '@/components/product/ProductTable'
-import ProductFilter from '@/components/product/ProductFilter'
+import ProductFilter from '@/components/product/filter/Filter'
 import AppLoader from '@/components/ui/AppLoader'
 
 export default {
@@ -23,7 +23,7 @@ export default {
     const loading = ref(true)
 
     onMounted(async () => {
-      await useLoad()
+      await useLoadData()
       loading.value = false
     })
 
@@ -35,7 +35,7 @@ export default {
       if (filter.category) {
         query.category = filter.category
       }
-      router.push({query})
+      router.replace({query})
     })
 
     const products = computed(() => store.getters['product/products']

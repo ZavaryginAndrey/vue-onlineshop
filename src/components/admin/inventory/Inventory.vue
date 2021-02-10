@@ -1,12 +1,12 @@
 <template>
   <app-page title="Инвентарь">
     <template #header>
-      <app-button type="primary" text="Добавить" @click="modal = true"/>
+      <app-button type="primary" @click="modal = true">Добавить</app-button>
     </template>
     <InventoryTable />
     <teleport to="body">
-      <app-modal v-if="modal" title="Создать заявку" @close="modal = false">
-        <product-form @close="modal = false"/>
+      <app-modal v-if="modal" title="Создать продукт" @close="modal = false">
+        <product-form @created="modal = false"/>
       </app-modal>
     </teleport>
   </app-page>
@@ -16,9 +16,10 @@
 import {ref} from 'vue'
 import AppButton from '@/components/ui/AppButton'
 import AppPage from '@/components/ui/AppPage'
-import AppModal from '@/components/ui/AppModal'
-import ProductForm from '@/components/product/ProductForm'
-import InventoryTable from '@/components/inventory/InventoryTable'
+import AppModal from '@/components/ui/modal/AppModal'
+import Pagination from '@/components/ui/AppPagination'
+import ProductForm from '@/components/admin/product/ProductForm'
+import InventoryTable from '@/components/admin/inventory/InventoryTable'
 
 export default {
   setup() {
@@ -29,6 +30,7 @@ export default {
     }
   },
   components: {
+    Pagination,
     ProductForm,
     AppButton,
     AppPage,

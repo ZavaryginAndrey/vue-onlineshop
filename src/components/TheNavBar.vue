@@ -17,16 +17,26 @@
         <router-link to="/">Магазин</router-link>
       </li>
       <li>
-        <router-link to="/cart">Корзина</router-link>
+        <router-link to="/cart">Корзина {{ cartItemsCount ? `[${cartItemsCount}]` : ''}}</router-link>
       </li>
     </ul>
   </nav>
 </template>
 
 <script>
+import {useStore} from 'vuex'
+import {computed} from 'vue';
 
 export default {
-  props: ['admin']
+  props: ['admin'],
+  setup() {
+    const store = useStore()
+
+
+    return {
+      cartItemsCount: computed(() => store.getters['cart/cartItemsCount'])
+    }
+  }
 }
 </script>
 

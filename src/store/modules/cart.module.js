@@ -1,21 +1,18 @@
 import {reactive} from 'vue'
 
-const CART_MODEL = {
-  '2': 3,
-  '5': 1,
-  '7': 8
-}
-
 export default {
   namespaced: true,
   state() {
     return {
-      cart: reactive(CART_MODEL)
+      cart: reactive({})
     }
   },
   getters: {
     cart(state) {
       return state.cart
+    },
+    cartItemsCount(state) {
+      return Object.keys(state.cart).reduce((acc, key) => acc+state.cart[key], 0)
     }
   },
   mutations: {

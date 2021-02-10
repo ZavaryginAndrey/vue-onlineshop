@@ -1,4 +1,4 @@
-import axios from '@/axios/product';
+import axios from '@/axios/firebase';
 
 export default {
   namespaced: true,
@@ -9,6 +9,9 @@ export default {
     }
   },
   getters: {
+    product: state => id => {
+      return state.products.find(p => p.id === id)
+    },
     products(state) {
       return state.products
     },
@@ -29,18 +32,35 @@ export default {
   },
   actions: {
     async getProductList({commit}) {
-      const {data} = await axios.get('/products?count_gte=1')
-      const {data: outOfStock} = await axios.get('/products?count=0')
-      data.push(...outOfStock)
-      commit('setProducts', data)
+      const {data} = await axios.get('/products.json')
+      // firebase возвращает массив с уникальными id, приходится парсить
+      const unsortedProducts = Object.keys(data).map(key => {
+        return {id: key, ...data[key]}
+      })
+      
+      const sortedProducts = unsortedProducts
+        .filter(p => p.count)
+        .concat(unsortedProducts.filter(p => !p.count))
+      
+      commit('setProducts', sortedProducts)
     },
     async getCategoriesList({commit}) {
-      const {data} = await axios.get('/categories')
-      commit('setCategories', data)
+      const {data} = await axios.get('/categories.json')
+      // firebase возвращает массив с уникальными id, приходится парсить
+      const categories = Object.keys(data).map(key => {
+        return {id: key, ...data[key]}
+      })
+      
+      commit('setCategories', categories)
     },
     async create({commit, getters}, product) {
-      const {data} = await axios.post('/products', product)
-      commit('addProduct', {...product, id: data.id})
+      product.id = getters.products.length + 1
+      const {data} = await axios.post('/products.json', product)
+      
+      commit('addProduct', product)
+    },
+    removeCategory(_, id) {
+      console.log(id)
     }
   }
 }

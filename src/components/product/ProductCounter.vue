@@ -1,14 +1,15 @@
 <template>
     <h4 v-if="isOutOfStock">Товара нет в наличии</h4>
-    <app-button v-else-if="!cartCount" :text="currency(product.price)" @action="add"/>
+    <app-button v-else-if="!cartCount" @action="add">{{ currency(product.price) }}</app-button>
     <div :class="['product-controls', type]" v-else>
       <app-button
         type="primary"
-        text="+"
         :disabled="cartCount === product.count"
-        @action="add"/>
+        @action="add"
+      >+
+      </app-button>
       <strong>{{ cartCount }}</strong>
-      <app-button type="danger" text="-" @action="remove"/>
+      <app-button type="danger" @action="remove">-</app-button>
     </div>
 </template>
 
@@ -24,8 +25,6 @@ export default {
     const store = useStore()
     const cart = store.getters['cart/cart']
     const id = props.product.id
-
-
 
     return {
       currency,

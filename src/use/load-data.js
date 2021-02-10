@@ -1,6 +1,6 @@
 import {useStore} from 'vuex'
 
-export async function useLoad() {
+export async function useLoadData() {
   const store = useStore()
   
   if (!store.getters['product/products'].length) {

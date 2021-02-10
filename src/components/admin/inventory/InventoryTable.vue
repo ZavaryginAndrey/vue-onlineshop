@@ -13,19 +13,17 @@
     </tr>
     </thead>
     <tbody>
-    <tr v-for="product in products">
-      <td>{{product.id}}</td>
+    <tr v-for="(product, idx) in products" :key="product.id">
+      <td>{{idx + 1}}</td>
       <td>{{product.title}}</td>
       <td>
         <img :src="product.img" style="max-height: 80px">
       </td>
-      <td>{{product.category}}</td>
+      <td>{{categories.find(el => el.type === product.category).title}}</td>
       <td>{{product.count}}</td>
       <td>{{product.price}}</td>
       <td>
-        <button class="btn" disabled>
-          Открыть
-        </button>
+        <button class="btn" @click="$router.push('/admin/product/'+product.id)">Открыть</button>
       </td>
     </tr>
     </tbody>
@@ -35,21 +33,23 @@
 <script>
 import {useStore} from 'vuex'
 import {computed, onMounted, ref} from 'vue'
-import {useLoad} from '@/use/load'
+import {useLoadData} from '@/use/load-data'
 import AppLoader from '@/components/ui/AppLoader'
+import Pagination from '@/components/ui/AppPagination';
 
 export default {
-  components: {AppLoader},
+  components: {Pagination, AppLoader},
   setup() {
     const store = useStore()
     const loading = ref(true)
     onMounted(async () => {
-      await useLoad()
+      await useLoadData()
       loading.value = false
     })
 
     return {
       loading,
+      categories: computed(() => store.getters['product/categories']),
       products: computed(() => store.getters['product/products'])
     }
   }

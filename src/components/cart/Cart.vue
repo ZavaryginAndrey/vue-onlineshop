@@ -6,7 +6,7 @@
     <hr>
     <p class="text-right"><strong>Всего: {{ currency(total) }}</strong></p>
     <p class="text-right">
-      <button class="btn">Оплатить</button>
+      <app-button type="primary" disabled>Оплатить</app-button>
     </p>
   </app-page>
 </template>
@@ -15,10 +15,11 @@
 import {onMounted, ref, computed} from 'vue'
 import {useStore} from 'vuex'
 import {currency} from '@/utils/currency'
-import {useLoad} from '@/use/load'
+import {useLoadData} from '@/use/load-data'
 import AppLoader from '@/components/ui/AppLoader'
 import AppPage from '@/components/ui/AppPage'
 import CartTable from '@/components/cart/CartTable'
+import AppButton from '@/components/ui/AppButton'
 
 export default {
   setup() {
@@ -28,8 +29,9 @@ export default {
     const cart = store.getters['cart/cart']
 
     onMounted(async () => {
-      await useLoad()
+      await useLoadData()
       loading.value = false
+      console.log(store.getters['cart/cartItemsCount'])
     })
 
     const cartProducts = computed(() => store.getters['product/products']
@@ -44,6 +46,7 @@ export default {
     }
   },
   components: {
+    AppButton,
     AppLoader,
     AppPage,
     CartTable

@@ -19,7 +19,7 @@
 import {useStore} from 'vuex'
 import {useRoute} from 'vue-router'
 import {computed, onMounted, ref} from 'vue'
-import {useLoad} from '@/use/load'
+import {useLoadData} from '@/use/load-data'
 import AppPage from '@/components/ui/AppPage'
 import AppLoader from '@/components/ui/AppLoader'
 import ProductCounter from '@/components/product/ProductCounter'
@@ -32,16 +32,18 @@ export default {
     const product = ref({})
 
     onMounted(async () => {
-      await useLoad()
+      await useLoadData()
       product.value = store.getters['product/products'].find(p => p.id === route.params.id)
       loading.value = false
     })
 
+    const categories = computed(() => store.getters['product/categories'])
+    const category = computed(() => categories.value.find(c => c.type === product.value.category))
 
     return {
       product,
       loading,
-      category: computed(() => store.getters['product/categories'].find(category => category.type === product.value.category).title)
+      category
     }
   },
   components: {

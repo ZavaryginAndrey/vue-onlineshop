@@ -26,7 +26,7 @@
 import {computed, onMounted, ref, watch} from 'vue'
 import {useStore} from 'vuex'
 import {useRoute} from 'vue-router'
-import ProductCategory from '@/components/category/CategoryChose'
+import ProductCategory from '@/components/product/filter/FilterCategory'
 
 export default {
   emits: ['update:modelValue'],
@@ -34,7 +34,7 @@ export default {
   setup(props, {emit}) {
     const store = useStore()
     const route = useRoute()
-    const filterName = ref('')
+    const filterName = ref(route.query.search)
     const filterCategory = ref(route.query.category)
 
     onMounted(async () => {
