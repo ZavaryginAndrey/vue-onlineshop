@@ -1,6 +1,6 @@
 <template>
   <app-loader v-if="loading"/>
-  <div class="card">
+  <div class="card" v-else>
     <product-filter v-model="filter" />
     <product-table :products="products" />
   </div>

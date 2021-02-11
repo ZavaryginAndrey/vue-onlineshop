@@ -18,16 +18,20 @@
     <app-confirm
       v-if="confirmRemove"
       :message="`Вы уверены что хотите удалить продукт ${product.title}?`"
-      @close="confirmRemove = false"
       @confirm="remove"
       @reject="confirmRemove = false"
     />
     <app-confirm
       v-else-if="confirmUpdate"
       :message="`Вы уверены что хотите обновить данные продукта ${product.title}?`"
-      @close="confirmUpdate = false"
       @confirm="update"
       @reject="confirmUpdate = false"
+    />
+    <app-confirm
+        v-else-if="leave"
+        :message="`У вас есть несохранённые изменения, хотите покинуть страницу?`"
+        @confirm="navigate"
+        @reject="leave = false"
     />
   </teleport>
 </template>
@@ -37,6 +41,7 @@ import {useRoute} from 'vue-router'
 import {useStore} from 'vuex'
 import {computed, onMounted, ref} from 'vue'
 import {useLoadData} from '@/use/load-data'
+import {useLeaveGuard} from '@/use/leave-guard'
 import AppInput from '@/components/ui/AppInput'
 import AppLoader from '@/components/ui/AppLoader'
 import AppButton from '@/components/ui/AppButton'
@@ -73,6 +78,7 @@ export default {
     }
 
     const update = async () => {
+      confirmUpdate.value = false
       initialValue = await store.dispatch('product/update', product.value)
       product.value = {...initialValue}
     }
@@ -85,7 +91,8 @@ export default {
       hasChanges,
       remove,
       update,
-      categories: computed(() => store.getters['product/categories'])
+      categories: computed(() => store.getters['product/categories']),
+      ...useLeaveGuard(hasChanges)
     }
   },
   components: {

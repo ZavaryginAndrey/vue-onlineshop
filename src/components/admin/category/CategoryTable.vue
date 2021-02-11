@@ -1,6 +1,6 @@
 <template>
   <app-loader v-if="loading" />
-  <table class="table">
+  <table class="table" v-else>
     <thead>
     <tr>
       <th>#</th>

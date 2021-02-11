@@ -1,29 +1,35 @@
 <template>
+  <slot name="header"/>
   <div class="pagination">
-    <a href="#">&laquo;</a>
-    <a href="#" :class="{active: activePage === p}" v-for="p in pages">{{ p }}</a>
-    <a href="#">&raquo;</a>
+    <a v-for="(_, idx) in pages"
+       href="#"
+       @click="newPage(idx + 1)"
+    >{{ idx+1 }}
+    </a>
   </div>
+  <slot />
 </template>
 
 <script>
-import {computed, onMounted, ref, watch} from 'vue'
+import {computed} from 'vue'
 import {useRouter, useRoute} from 'vue-router'
+import {pageCount} from '@/utils/pagination'
 
 export default {
   emits: ['pageChange'],
-  props: ['data', 'itemsOnPage'],
-  setup(props) {
+  props: ['data', 'pageSize'],
+  setup(props, {emit}) {
     const router = useRouter()
     const route = useRoute()
-    const pages = [1,2,3,4,5]
 
-    props.data.splice()
+
+    const pagesCount = computed(() => pageCount(props.data, props.pageSize))
 
     return {
       activePage: computed(() => route.query.page),
-      pages,
+      pages: new Array(pagesCount.value),
       newPage(id) {
+        emit('pageChange', id)
         router.replace({query: {page: id}})
       }
     }

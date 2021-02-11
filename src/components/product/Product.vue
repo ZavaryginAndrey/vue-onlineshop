@@ -7,7 +7,7 @@
     v-else-if="product"
   >
     <img :src="product.img">
-    <p>Категория: <strong>{{ category }}</strong></p>
+    <p>Категория: <strong>{{ category.title }}</strong></p>
     <product-counter type="in-card" :product="product"/>
   </app-page>
   <h3 class="text-center text-white" v-else>
