@@ -1,6 +1,6 @@
 <template>
   <app-loader v-if="loading" />
-  <pagination :data="data" pageSize="5" v-else>
+  <pagination :data="data" :pageSize="process.env.VUE_APP_PAGE_SIZE" v-else>
     <template #header>
       <table class="table">
         <thead>
@@ -62,7 +62,7 @@ export default {
       loading,
       categories: computed(() => store.getters['product/categories']),
       data: computed(() => store.getters['product/products']),
-      products: computed(() => paginate(store.getters['product/products'], 5, route.query.page))
+      products: computed(() => paginate(store.getters['product/products'], process.env.VUE_APP_PAGE_SIZE, route.query.page))
     }
   }
 }

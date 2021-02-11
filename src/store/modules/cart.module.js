@@ -4,7 +4,7 @@ export default {
   namespaced: true,
   state() {
     return {
-      cart: reactive({})
+      cart: reactive(JSON.parse(localStorage.getItem('cart')) || {})
     }
   },
   getters: {
@@ -18,9 +18,11 @@ export default {
   mutations: {
     increaseProductCount: (state, id) => {
       state.cart[id] ? state.cart[id]++ : state.cart[id] = 1
+      localStorage.setItem('cart', JSON.stringify(state.cart))
     },
     decreaseProductCount: (state, id) => {
       state.cart[id] === 1 ? delete state.cart[id] : state.cart[id]--
+      localStorage.setItem('cart', JSON.stringify(state.cart))
     }
   },
   actions: {

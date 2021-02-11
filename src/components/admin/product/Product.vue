@@ -1,6 +1,11 @@
 <template>
   <app-loader v-if="loading"/>
-  <div class="card" v-else>
+  <app-page
+    :title="product.title"
+    v-else
+  >
+    <img :src="product.img">
+
     <app-input v-model="product.title" label="Название" />
     <app-input v-model="product.img" label="Изображение" />
     <app-input v-model="product.count" label="Количество" />
@@ -13,7 +18,7 @@
     </div>
     <app-button type="danger" @action="confirmRemove = true">Удалить</app-button>
     <app-button type="primary" @action="confirmUpdate = true" v-if="hasChanges">Обновить</app-button>
-  </div>
+  </app-page>
   <teleport to="body">
     <app-confirm
       v-if="confirmRemove"
@@ -21,17 +26,21 @@
       @confirm="remove"
       @reject="confirmRemove = false"
     />
+  </teleport>
+  <teleport to="body">
     <app-confirm
-      v-else-if="confirmUpdate"
+      v-if="confirmUpdate"
       :message="`Вы уверены что хотите обновить данные продукта ${product.title}?`"
       @confirm="update"
       @reject="confirmUpdate = false"
     />
+  </teleport>
+  <teleport to="body">
     <app-confirm
-        v-else-if="leave"
-        :message="`У вас есть несохранённые изменения, хотите покинуть страницу?`"
-        @confirm="navigate"
-        @reject="leave = false"
+      v-if="leave"
+      :message="`У вас есть несохранённые изменения, хотите покинуть страницу?`"
+      @confirm="navigate"
+      @reject="leave = false"
     />
   </teleport>
 </template>
@@ -43,6 +52,7 @@ import {computed, onMounted, ref} from 'vue'
 import {useLoadData} from '@/use/load-data'
 import {useLeaveGuard} from '@/use/leave-guard'
 import AppInput from '@/components/ui/AppInput'
+import AppPage from '@/components/ui/AppPage'
 import AppLoader from '@/components/ui/AppLoader'
 import AppButton from '@/components/ui/AppButton'
 import AppConfirm from '@/components/ui/modal/AppConfirm'
@@ -74,12 +84,13 @@ export default {
     )
 
     const remove = async () => {
+      confirmRemove.value = false
       await store.dispatch('product/remove', route.params.id)
     }
 
     const update = async () => {
       confirmUpdate.value = false
-      initialValue = await store.dispatch('product/update', product.value)
+      initialValue = await store.dispatch('product/update', {id: route.params.id, ...product.value})
       product.value = {...initialValue}
     }
 
@@ -99,7 +110,8 @@ export default {
     AppConfirm,
     AppInput,
     AppLoader,
-    AppButton
+    AppButton,
+    AppPage
   }
 }
 </script>

@@ -3,5 +3,5 @@ export function paginate(array, page_size, page_number) {
 }
 
 export function pageCount(array, page_size) {
-    return  array.length / page_size + (array.length % page_size ? 1 : 0)
+    return  Math.ceil(array.length / page_size)
 }

@@ -28,6 +28,9 @@ export default {
     },
     addProduct(state, product) {
       state.products.push(product)
+    },
+    addCategory(state, category) {
+      state.categories.push(category)
     }
   },
   actions: {
@@ -54,13 +57,24 @@ export default {
       commit('setCategories', categories)
     },
     async create({commit, getters}, product) {
-      product.id = getters.products.length + 1
       const {data} = await axios.post('/products.json', product)
-      
-      commit('addProduct', product)
+      commit('addProduct', {...product, id: data.id})
     },
-    removeCategory(_, id) {
-      console.log(id)
+    async createCategory({commit, getters}, category) {
+      const {data} = await axios.post('/categories.json', category)
+      commit('addCategories', {...category, id: data.id})
+    },
+    async remove({commit, getters}, id) {
+      await axios.delete(`/products/${id}.json`)
+      commit('setProducts', getters.products.filter(p => p.id !== id))
+    },
+    async removeCategory({commit, getters}, id) {
+      await axios.delete(`/categories/${id}.json`)
+      commit('setCategories', getters.categories.filter(p => p.id !== id))
+    },
+    async update({commit, getters}, product) {
+      const {data} = await axios.put(`/products/${product.id}.json`, product)
+      console.log(data)
     }
   }
 }

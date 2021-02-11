@@ -15,7 +15,7 @@ import AppButton from '@/components/ui/AppButton'
 
 export default {
   emits: ['created'],
-  setup(props, {emit}) {
+  setup(_, {emit}) {
     const store = useStore()
     const categories = computed(() => store.getters['product/categories'])
 
