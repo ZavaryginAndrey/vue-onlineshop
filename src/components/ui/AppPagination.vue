@@ -1,63 +1,64 @@
 <template>
-  <slot name="header"/>
   <div class="pagination">
-    <a v-for="(_, idx) in pages"
-       href="#"
-       @click="newPage(idx + 1)"
-    >{{ idx+1 }}
-    </a>
+    <button
+      class="btn"
+      :disabled="modelValue === 1"
+      @click="$emit('update:modelValue', modelValue-1)"
+    >
+      &laquo;
+    </button>
+    <button
+      class="btn"
+      v-for="p in pages"
+      :class="{active: p === modelValue}"
+      @click="$emit('update:modelValue', p)"
+    >
+      {{ p }}
+    </button>
+    <button
+      class="btn"
+      :disabled="modelValue === pages"
+      @click="$emit('update:modelValue', modelValue+1)"
+    >
+      &raquo;
+    </button>
   </div>
-  <slot />
 </template>
 
 <script>
 import {computed} from 'vue'
-import {useRouter, useRoute} from 'vue-router'
-import {pageCount} from '@/utils/pagination'
 
 export default {
-  emits: ['pageChange'],
-  props: ['data', 'pageSize'],
-  setup(props, {emit}) {
-    const router = useRouter()
-    const route = useRoute()
-
-
-    const pagesCount = computed(() => pageCount(props.data, props.pageSize))
-
+  emits: ['update:modelValue'],
+  props: ['modelValue', 'pageSize', 'itemsCount'],
+  setup(props) {
     return {
-      activePage: computed(() => route.query.page),
-      pages: new Array(pagesCount.value),
-      newPage(id) {
-        emit('pageChange', id)
-        router.replace({query: {page: id}})
-      }
+      pages: computed(() => Math.ceil(props.itemsCount / props.pageSize))
     }
   }
 }
+
 </script>
 
 <style scoped>
 .pagination {
-  display: inline-block;
+  display: flex;
+  justify-content: center;
 }
 
-.pagination a {
+.pagination .btn {
   color: black;
-  float: left;
   padding: 8px 16px;
-  text-decoration: none;
-
+  background: #eaecef;
+  border: none;
+  border-radius: 10px;
 }
 
-.pagination a.active {
+.pagination .btn.active {
   background: #3eaf7c;
-  border-radius: 50%;
   color: white;
 }
-.pagination a:hover:not(.active) {
-  background-color: #ddd;
-  border-radius: 50%;
+.pagination .btn:hover:not(.active) {
+  background-color: #cccccc;
 }
-
 </style>

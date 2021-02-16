@@ -28,7 +28,7 @@
   <teleport to="body">
     <app-confirm
       v-if="confirm"
-      message="Хочешь удалить?"
+      message="Хотите удалить категорию?"
       @confirm="removeCategory"
       @reject="confirm = false"
     />

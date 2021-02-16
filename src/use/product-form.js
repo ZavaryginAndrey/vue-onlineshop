@@ -1,5 +1,5 @@
-import {useField, useForm} from 'vee-validate';
-import * as yup from 'yup';
+import {useField, useForm} from 'vee-validate'
+import * as yup from 'yup'
 
 export function useProductForm(fn) {
   
@@ -11,8 +11,7 @@ export function useProductForm(fn) {
     yup
       .string()
       .trim()
-      .required('Пожалуйста введите название')
-      .matches('[\\w+\\s+]+', 'Название продукта не должно содержать цифр или других символов')
+      .required('Пожалуйста введите название продукта')
   )
   
   const {value: img, errorMessage: imgError, handleBlur: imgBlur} = useField(
@@ -40,15 +39,16 @@ export function useProductForm(fn) {
       .min(0, 'Цена товара не может быть отрицательной')
   )
   
-  const {value: type, errorMessage: typeError, handleBlur: typeBlur} = useField(
-    'title',
-    yup
-      .string()
-      .trim()
-      .required('Пожалуйста введите тип категории')
-  )
+  // const {value: type, errorMessage: typeError, handleBlur: typeBlur} = useField(
+  //   'title',
+  //   yup
+  //     .string()
+  //     .trim()
+  //     .required('Пожалуйста введите тип категории')
+  // )
   
-  const {value: category, errorMessage: categoryError, handleBlur: categoryBlur} = useField('category',
+  const {value: category, errorMessage: categoryError} = useField(
+    'category',
     yup
       .string()
       .required('Выбери категорию')
@@ -71,10 +71,6 @@ export function useProductForm(fn) {
     priceBlur,
     category,
     categoryError,
-    categoryBlur,
-    type,
-    typeError,
-    typeBlur,
     onSubmit,
     isSubmitting
   }

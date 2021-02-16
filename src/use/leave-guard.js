@@ -16,8 +16,7 @@ export function useLeaveGuard(hasChanges) {
     }
 
     onBeforeRouteLeave(to => {
-        leave.value = to.path
-        console.log(leave.value)
+        leaveTo.value = to.path
 
         if (canLeave.value) {
             return true

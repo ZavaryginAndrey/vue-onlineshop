@@ -1,6 +1,6 @@
-import {useField, useForm} from 'vee-validate';
-import * as yup from 'yup';
-import {computed, watch} from 'vue';
+import {useField, useForm} from 'vee-validate'
+import * as yup from 'yup'
+import {computed, watch} from 'vue'
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
 
@@ -40,7 +40,6 @@ export function useLoginForm() {
   })
   
   const onSubmit = handleSubmit(async values => {
-    console.log('Form', values)
     try {
       await store.dispatch('auth/login', values)
       router.push('/admin/products')

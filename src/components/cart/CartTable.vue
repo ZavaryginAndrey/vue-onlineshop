@@ -12,7 +12,7 @@
       <td>
         {{product.title}}
         <br />
-        <img :src="product.img" style="max-height: 80px;">
+        <img :src="product.img">
       </td>
       <td>
         <product-counter :product="product" />

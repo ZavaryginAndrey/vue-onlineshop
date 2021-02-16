@@ -1,6 +1,6 @@
 <template>
   <app-loader v-if="loading"/>
-  <div class="card" v-else>
+  <div class="card">
     <product-filter v-model="filter" />
     <product-table :products="products" />
   </div>
@@ -14,6 +14,7 @@ import {useLoadData} from '@/use/load-data'
 import ProductTable from '@/components/product/ProductTable'
 import ProductFilter from '@/components/product/filter/Filter'
 import AppLoader from '@/components/ui/AppLoader'
+import AppPage from '@/components/ui/AppPage'
 
 export default {
   setup() {
@@ -25,6 +26,7 @@ export default {
     onMounted(async () => {
       await useLoadData()
       loading.value = false
+      document.title = 'Магазинчик'
     })
 
     watch(filter, filter => {
@@ -61,6 +63,7 @@ export default {
   },
   components: {
     AppLoader,
+    AppPage,
     ProductFilter,
     ProductTable
   }

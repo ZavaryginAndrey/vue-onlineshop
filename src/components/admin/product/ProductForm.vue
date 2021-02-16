@@ -1,7 +1,17 @@
 <template>
   <form @submit.prevent="onSubmit">
-    <app-input v-model="title" label="Название" @blur="titleBlur" :error="titleError"/>
-    <app-input v-model="img" label="Изображение" @blur="imgBlur" :error="imgError"/>
+    <app-input
+      v-model="title"
+      label="Название"
+      @blur="titleBlur"
+      :error="titleError"
+    />
+    <app-input
+      v-model="img"
+      label="Изображение"
+      @blur="imgBlur"
+      :error="imgError"
+    />
     <div class="form-control">
       <label>Категория</label>
       <select v-model="category">
@@ -9,9 +19,21 @@
       </select>
       <small if v-if="categoryError">{{categoryError}}</small>
     </div>
-    <app-input v-model="count" label="Количество" @blur="countBlur" :error="countError"/>
-    <app-input v-model="price" label="Цена" @blur="priceBlur" :error="priceError"/>
-    <app-button type="submit" :disabled="isSubmitting">Создать</app-button>
+    <app-input
+      v-model.number="count"
+      label="Количество"
+      type="number"
+      @blur="countBlur"
+      :error="countError"
+    />
+    <app-input
+      v-model.number="price"
+      label="Цена"
+      type="number"
+      @blur="priceBlur"
+      :error="priceError"
+    />
+    <app-button :disabled="isSubmitting">Создать</app-button>
   </form>
 </template>
 
@@ -26,7 +48,6 @@ export default {
   emits: ['created'],
   setup(props, {emit}) {
     const store = useStore()
-    const categories = computed(() => store.getters['product/categories'])
 
     const create = async values => {
       console.log(values)
@@ -36,7 +57,7 @@ export default {
 
     return {
       ...useProductForm(create),
-      categories
+      categories: computed(() => store.getters['product/categories'])
     }
   },
   components: {AppButton, AppInput}

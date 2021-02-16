@@ -37,11 +37,11 @@ const routes = [
   {
     path: '/admin',
     name: 'Admin',
-    component: () => import('../components/admin/Admin'),
+    component: () => import('../views/admin/Admin'),
     children: [
-      { path: 'product/:id', component: () => import('../components/admin/product/Product')},
-      { path: 'products', component: () => import('../components/admin/inventory/Inventory')},
-      { path: 'categories', component: () => import('../components/admin/category/Category')}
+      { path: 'product/:id', component: () => import('../views/admin/Product')},
+      { path: 'products', component: () => import('../views/admin/Inventory')},
+      { path: 'categories', component: () => import('../views/admin/Category')}
     ],
     meta: {
       layout: 'admin',
@@ -59,11 +59,22 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const requireAuth = to.meta.auth
+  const isAdmin = store.getters['auth/role'] === 'admin'
   
-  if (requireAuth && store.getters['auth/isAuthenticated']) {
+  if (requireAuth && store.getters['auth/token'] && isAdmin) {
     next()
-  } else if (requireAuth && !store.getters['auth/isAuthenticated']) {
+  } else if (requireAuth && !store.getters['auth/token']) {
     next('/auth?message=auth')
+    store.commit('setMessage', {
+      value: 'Пожалуйста войдите в систему',
+      type: 'danger'
+    })
+  } else if (requireAuth && store.getters['auth/token'] && !isAdmin) {
+    next(from)
+    store.dispatch('setMessage', {
+      value: 'Данный пользователь не имеет доступа администратора',
+      type: 'danger'
+    })
   } else {
     next()
   }

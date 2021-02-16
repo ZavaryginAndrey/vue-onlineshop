@@ -1,8 +1,8 @@
 <template>
   <div :class="['form-control', {invalid: error}]">
-    <label :for="type">{{ label }}</label>
-    <input type="text" :id="type" v-model="value" @blur="blur">
-    <small if v-if="error">{{error}}</small>
+    <label :for="id">{{ label }}</label>
+    <input :type="type || 'text'" :id="id" v-model="value" @blur="blur">
+    <small v-if="error">{{error}}</small>
   </div>
 </template>
 
@@ -11,7 +11,7 @@ import {computed, ref, watch} from 'vue'
 
 export default {
   emits: ['update:modelValue'],
-  props: ['modelValue', 'label', 'error', 'blur'],
+  props: ['modelValue', 'label', 'error', 'blur', 'type'],
   setup(props, {emit}) {
     const value = ref(props.modelValue)
 
@@ -21,7 +21,7 @@ export default {
 
     return {
       value,
-      type: computed(() => 'input' + Math.random())
+      id: computed(() => 'input' + Math.random())
     }
   }
 }

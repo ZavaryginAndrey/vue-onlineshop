@@ -487,6 +487,10 @@ h3 {
     padding: .5rem 1rem;
 }
 
+.table td > img  {
+    max-height: 80px;
+}
+
 .table tbody td {
     text-align: center;
 }

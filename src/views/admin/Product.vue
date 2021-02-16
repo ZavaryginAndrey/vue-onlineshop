@@ -1,15 +1,24 @@
 <template>
   <app-loader v-if="loading"/>
   <app-page
+    v-else-if="product.title"
     :title="product.title"
-    v-else
   >
     <img :src="product.img">
-
-    <app-input v-model="product.title" label="Название" />
-    <app-input v-model="product.img" label="Изображение" />
-    <app-input v-model="product.count" label="Количество" />
-    <app-input v-model="product.price" label="Цена" />
+    <app-input
+      v-model="product.title"
+      label="Название" />
+    <app-input
+      v-model="product.img"
+      label="Изображение" />
+    <app-input
+      v-model.number="product.count"
+      type="number"
+      label="Количество" />
+    <app-input
+      v-model.number="product.price"
+      type="number"
+      label="Цена" />
     <div class="form-control">
       <label>Категория</label>
       <select v-model="product.category">
@@ -19,6 +28,9 @@
     <app-button type="danger" @action="confirmRemove = true">Удалить</app-button>
     <app-button type="primary" @action="confirmUpdate = true" v-if="hasChanges">Обновить</app-button>
   </app-page>
+  <h3 class="text-center text-white" v-else>
+    Товара не найден.
+  </h3>
   <teleport to="body">
     <app-confirm
       v-if="confirmRemove"
@@ -65,32 +77,36 @@ export default {
     const confirmRemove = ref(false)
     const confirmUpdate = ref(false)
     let initialValue
-    // Как быть?
-    // reactive не позволяет обновить значение после загрузки данных.
-    // из-за чего происходит ошибка, при попытке получить доступ к атрибутам undefined объекта
-    const product = ref()
+    const product = ref({})
 
     onMounted(async () => {
       await useLoadData()
       loading.value = false
       initialValue = store.getters['product/products'].find(p => p.id === route.params.id)
       product.value = {...initialValue}
+      console.log('mounted', initialValue)
     })
 
-    const hasChanges = computed(() =>
-      Object.keys(product.value).reduce((acc, key) => {
+    const hasChanges = computed(() => Object.keys(product.value).reduce((acc, key) => {
         return product.value[key] !== initialValue[key] || acc
       }, false)
     )
 
     const remove = async () => {
       confirmRemove.value = false
+      // здесь есть бага (может Владилен поможет разобраться)
+      // при попытке удалить продукт, поля которого были изменены - срабатывает leaveGuard.
+      // leaveGuard срабатывает после удаления, в следствии чего появляется redirect confirm
+      // это ломает workflow, т.к отказавшить покинуть страницу - мы останемся на странице удалённого товара.
+      // Не придумал ничего лучше, чем отменить изменения продукта, если удаление было подтверждено
+
+      product.value = {...initialValue}
       await store.dispatch('product/remove', route.params.id)
     }
 
     const update = async () => {
       confirmUpdate.value = false
-      initialValue = await store.dispatch('product/update', {id: route.params.id, ...product.value})
+      initialValue = await store.dispatch('product/update', product.value)
       product.value = {...initialValue}
     }
 

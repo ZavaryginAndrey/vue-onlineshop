@@ -3,14 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "dbase": "json-server --watch database.json",
-    "serve": "concurrently \"npm run start\" \"npm run dbase\""
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
   },
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "image-url-validator": "^1.0.4",
     "vee-validate": "^4.1.13",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",

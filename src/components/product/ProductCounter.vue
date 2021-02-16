@@ -2,14 +2,14 @@
     <h4 v-if="isOutOfStock">Товара нет в наличии</h4>
     <app-button v-else-if="!cartCount" @action="add">{{ currency(product.price) }}</app-button>
     <div :class="['product-controls', type]" v-else>
+      <app-button type="danger" @action="remove">-</app-button>
+      <strong>{{ cartCount }}</strong>
       <app-button
         type="primary"
         :disabled="cartCount === product.count"
         @action="add"
       >+
       </app-button>
-      <strong>{{ cartCount }}</strong>
-      <app-button type="danger" @action="remove">-</app-button>
     </div>
 </template>
 

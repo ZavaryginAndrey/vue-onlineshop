@@ -2,13 +2,21 @@
   <app-loader v-if="loading"/>
   <app-page v-else title="Корзина">
     <h3 class="text-center" v-if="isEmpty">В корзине пока ничего нет</h3>
-    <cart-table :products="cartProducts" v-else></cart-table>
-    <hr>
-    <p class="text-right"><strong>Всего: {{ currency(total) }}</strong></p>
-    <p class="text-right">
-      <app-button type="primary" disabled>Оплатить</app-button>
-    </p>
+    <div v-else>
+      <cart-table :products="cartProducts" ></cart-table>
+      <hr>
+      <p class="text-right"><strong>Всего: {{ currency(total) }}</strong></p>
+      <p class="text-right">
+        <app-button type="primary" :disabled="!auth">Оплатить</app-button>
+      </p>
+      <auth-form isCart @signUp="modal = true" v-if="!auth"/>
+    </div>
   </app-page>
+  <teleport to="body">
+    <app-modal v-if="modal" title="Регистрация" @close="modal = false">
+      <AuthSignUp @registered="modal = false"/>
+    </app-modal>
+  </teleport>
 </template>
 
 <script>
@@ -20,18 +28,22 @@ import AppLoader from '@/components/ui/AppLoader'
 import AppPage from '@/components/ui/AppPage'
 import CartTable from '@/components/cart/CartTable'
 import AppButton from '@/components/ui/AppButton'
+import AuthForm from '@/components/auth/AuthForm'
+import AppModal from '@/components/ui/modal/AppModal'
+import AuthSignUp from '@/components/auth/AuthSignUp'
+
 
 export default {
   setup() {
 
     const store = useStore()
     const loading = ref(true)
+    const modal = ref(false)
     const cart = store.getters['cart/cart']
 
     onMounted(async () => {
       await useLoadData()
       loading.value = false
-      console.log(store.getters['cart/cartItemsCount'])
     })
 
     const cartProducts = computed(() => store.getters['product/products']
@@ -41,15 +53,21 @@ export default {
       loading,
       cartProducts,
       currency,
+      modal,
       isEmpty: computed(() => Object.keys(cart).length === 0),
       total: computed(() => cartProducts.value.reduce((acc, product) => acc + product.price*cart[product.id], 0)),
+      auth: computed(() => store.getters['auth/token'])
     }
   },
   components: {
     AppButton,
     AppLoader,
     AppPage,
-    CartTable
+    AuthForm,
+    CartTable,
+
+    AuthSignUp,
+    AppModal
   }
 }
 </script>
