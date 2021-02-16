@@ -19,6 +19,9 @@
       <li>
         <router-link to="/cart">Корзина {{ cartItemsCount ? `[${cartItemsCount}]` : ''}}</router-link>
       </li>
+      <li>
+        <router-link to="/" v-if="isAuthenticated">Выход</router-link>
+      </li>
     </ul>
   </nav>
 </template>
@@ -34,7 +37,8 @@ export default {
 
 
     return {
-      cartItemsCount: computed(() => store.getters['cart/cartItemsCount'])
+      cartItemsCount: computed(() => store.getters['cart/cartItemsCount']),
+      isAuthenticated: computed(() => store.getters['auth/token'])
     }
   }
 }

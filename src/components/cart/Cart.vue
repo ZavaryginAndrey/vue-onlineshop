@@ -7,7 +7,7 @@
       <hr>
       <p class="text-right"><strong>Всего: {{ currency(total) }}</strong></p>
       <p class="text-right">
-        <app-button type="primary" :disabled="!auth">Оплатить</app-button>
+        <app-button type="primary" :disabled="!auth" @action="createOrder">Оплатить</app-button>
       </p>
       <auth-form isCart @signUp="modal = true" v-if="!auth"/>
     </div>
@@ -31,6 +31,7 @@ import AppButton from '@/components/ui/AppButton'
 import AuthForm from '@/components/auth/AuthForm'
 import AppModal from '@/components/ui/modal/AppModal'
 import AuthSignUp from '@/components/auth/AuthSignUp'
+import axios from '@/axios/firebase';
 
 
 export default {
@@ -39,7 +40,7 @@ export default {
     const store = useStore()
     const loading = ref(true)
     const modal = ref(false)
-    const cart = store.getters['cart/cart']
+    const cart = computed(() => store.getters['cart/cart'])
 
     onMounted(async () => {
       await useLoadData()
@@ -47,16 +48,27 @@ export default {
     })
 
     const cartProducts = computed(() => store.getters['product/products']
-      .filter(product => Object.keys(cart).includes(product.id)))
+      .filter(product => Object.keys(cart.value).includes(product.id)))
+
+    const createOrder = async () => {
+      const order = store.getters['cart/cart']
+      await axios.post('/orders.json', order)
+      await store.dispatch('setMessage', {
+        message: 'Заказ успешно создан',
+        type: 'primary'
+      })
+      store.commit('cart/clearCart')
+    }
 
     return{
       loading,
       cartProducts,
       currency,
       modal,
-      isEmpty: computed(() => Object.keys(cart).length === 0),
+      isEmpty: computed(() => Object.keys(cart.value).length === 0),
       total: computed(() => cartProducts.value.reduce((acc, product) => acc + product.price*cart[product.id], 0)),
-      auth: computed(() => store.getters['auth/token'])
+      auth: computed(() => store.getters['auth/token']),
+      createOrder
     }
   },
   components: {

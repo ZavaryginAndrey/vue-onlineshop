@@ -23,6 +23,10 @@ export default {
     decreaseProductCount: (state, id) => {
       state.cart[id] === 1 ? delete state.cart[id] : state.cart[id]--
       localStorage.setItem('cart', JSON.stringify(state.cart))
+    },
+    clearCart(state) {
+      state.cart = {}
+      localStorage.removeItem('cart')
     }
   },
   actions: {
